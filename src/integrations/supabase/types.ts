@@ -14,16 +14,238 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      banned_clients: {
+        Row: {
+          banned_at: string
+          client_id: string
+          reason: string
+        }
+        Insert: {
+          banned_at?: string
+          client_id: string
+          reason?: string
+        }
+        Update: {
+          banned_at?: string
+          client_id?: string
+          reason?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          active: boolean
+          id: string
+          name: string
+          sort: number
+        }
+        Insert: {
+          active?: boolean
+          id?: string
+          name: string
+          sort?: number
+        }
+        Update: {
+          active?: boolean
+          id?: string
+          name?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      comments: {
+        Row: {
+          author_name: string
+          client_id: string
+          content: string
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          post_id: string
+        }
+        Insert: {
+          author_name: string
+          client_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          post_id: string
+        }
+        Update: {
+          author_name?: string
+          client_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          agree: number
+          author_name: string
+          category: string
+          client_id: string
+          comments_count: number
+          content: string
+          created_at: string
+          funny: number
+          id: string
+          is_anonymous: boolean
+          love: number
+          reports_count: number
+          status: string
+          title: string
+          wow: number
+        }
+        Insert: {
+          agree?: number
+          author_name: string
+          category: string
+          client_id: string
+          comments_count?: number
+          content: string
+          created_at?: string
+          funny?: number
+          id?: string
+          is_anonymous?: boolean
+          love?: number
+          reports_count?: number
+          status?: string
+          title: string
+          wow?: number
+        }
+        Update: {
+          agree?: number
+          author_name?: string
+          category?: string
+          client_id?: string
+          comments_count?: number
+          content?: string
+          created_at?: string
+          funny?: number
+          id?: string
+          is_anonymous?: boolean
+          love?: number
+          reports_count?: number
+          status?: string
+          title?: string
+          wow?: number
+        }
+        Relationships: []
+      }
+      reactions_log: {
+        Row: {
+          client_id: string
+          kind: string
+          post_id: string
+        }
+        Insert: {
+          client_id: string
+          kind: string
+          post_id: string
+        }
+        Update: {
+          client_id?: string
+          kind?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_log_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          post_id: string
+          reason: string
+          reported_by_client_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          post_id: string
+          reason: string
+          reported_by_client_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          post_id?: string
+          reason?: string
+          reported_by_client_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      toggle_reaction: {
+        Args: { _client: string; _kind: string; _post: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +372,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
