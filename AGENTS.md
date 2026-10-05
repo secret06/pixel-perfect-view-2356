@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Guest (student) reads/writes go through server functions in src/lib/posts.functions.ts using the admin client; tables have no anon policies so the anonymous browser ID never leaks.
+- Admin access is checked server-side via has_role on every admin server function; the first account may claim admin only while none exists.
